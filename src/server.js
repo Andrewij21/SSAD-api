@@ -15,6 +15,12 @@ app.use(express.json());
 // Accept cors
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.json({
+    msg: "hello",
+  });
+});
+
 // Use all routes
 app.use("/api/v1/", routes);
 
