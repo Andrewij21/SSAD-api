@@ -1,0 +1,25 @@
+@BASE_URI = http://localhost:3000/api/v1
+
+POST {{BASE_URI}}/device
+Content-Type: application/json
+
+{
+    "name":"device2"
+}
+
+###
+PATCH  {{BASE_URI}}/device/user/652e97693c19d90db2ee0153
+Content-Type: application/json
+
+{
+    "user":"111"
+}
+
+###
+POST {{BASE_URI}}/user
+Content-Type: application/json
+
+{
+    "username":"admin",
+    "password":"123"
+}
