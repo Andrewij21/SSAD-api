@@ -11,6 +11,11 @@ const schema = new Schema({
     required: true,
   },
   devices: [String],
+  roles: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
 });
 
 module.exports = model("user", schema);
