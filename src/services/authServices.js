@@ -17,7 +17,7 @@ class AuthServices {
 
     const payload = {
       username: user.username,
-      // roles,
+      roles: user.roles,
     };
 
     // const token = await createToken(payload);
@@ -29,6 +29,7 @@ class AuthServices {
       data: {
         ...requestResponse.success,
         // data: { accessToken: token.accessToken, roles, user: user._id },
+        data: { ...payload },
       },
     };
   }
