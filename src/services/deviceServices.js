@@ -29,7 +29,7 @@ class DeviceServices {
     logger.info(`Create user with ID ${result._id}  `);
     return {
       ...requestResponse.created,
-      data: { id: result._id, device: result.name, user: result.user },
+      data: { _id: result._id, name: result.name, user: result.user },
     };
   }
   async addUser({ id, user }) {
