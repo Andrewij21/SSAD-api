@@ -13,7 +13,15 @@ class UserControllers {
     }
     checkResponse(res, response, __filename);
   }
-
+  async getUserCount(req, res) {
+    try {
+      const data = await userService.getCount();
+      response = data;
+    } catch (error) {
+      response = error;
+    }
+    checkResponse(res, response, __filename);
+  }
   async createUser(req, res) {
     const { username, password } = req.body;
     const check = checkIfEmpty({ username, password });

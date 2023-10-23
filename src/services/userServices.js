@@ -11,6 +11,11 @@ class UserServices {
     logger.info(`Get ${users.length} users `);
     return { ...requestResponse.success, data: users };
   }
+  async getCount() {
+    const users = await User.find({}).count();
+    logger.info(`Get ${users} user `);
+    return { ...requestResponse.success, data: { length: users } };
+  }
   async create(body) {
     const exist = await User.findOne({ username: body.username });
     if (exist) return { ...requestResponse.conflict };
