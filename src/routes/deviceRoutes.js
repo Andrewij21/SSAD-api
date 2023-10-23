@@ -6,7 +6,8 @@ router
   .get(deviceController.getDevice)
   .post(deviceController.createDevice);
 
-router.route("/user").post(deviceController.addUserToDevice);
+// router.route("/user").post(deviceController.addUserToDevice);
+router.route("/count").get(deviceController.getDeviceCount);
 
 router
   .route("/:id")

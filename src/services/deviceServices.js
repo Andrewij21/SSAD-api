@@ -11,6 +11,11 @@ class DeviceServices {
     logger.info(`Get ${devices.length} device `);
     return { ...requestResponse.success, data: devices };
   }
+  async getCount() {
+    const devices = await Device.find({}).count();
+    logger.info(`Get ${devices} device `);
+    return { ...requestResponse.success, data: { length: devices } };
+  }
   async create(body) {
     const exist = await Device.findOne({ name: body.name });
     if (exist) return { ...requestResponse.conflict };

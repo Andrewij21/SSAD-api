@@ -13,6 +13,15 @@ class DeviceControllers {
     }
     checkResponse(res, response, __filename);
   }
+  async getDeviceCount(req, res) {
+    try {
+      const data = await deviceService.getCount();
+      response = data;
+    } catch (error) {
+      response = error;
+    }
+    checkResponse(res, response, __filename);
+  }
 
   async createDevice(req, res) {
     const { name, user } = req.body;
