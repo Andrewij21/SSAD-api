@@ -11,6 +11,7 @@ const schema = new Schema({
     required: true,
   },
   devices: [String],
+  area: String,
   roles: {
     type: String,
     enum: ["user", "admin"],
