@@ -32,6 +32,7 @@ class UserControllers {
       const data = await userService.create({
         username: username.trim(),
         password: password.trim(),
+        ...req.body,
       });
       response = data;
     } catch (error) {
