@@ -9,6 +9,10 @@ const schema = new Schema({
   user: {
     type: String,
   },
+  status: {
+    type: Boolean,
+    default: false,
+  },
   verified: {
     type: Boolean,
     default: false,
