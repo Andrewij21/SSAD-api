@@ -9,7 +9,7 @@ const createToken = async (payload) => {
     });
 
     const refreshToken = jwt.sign(
-      { email: payload.email },
+      { username: payload.username },
       process.env.SECRET_REFRESH_TOKEN,
       { expiresIn: "1d" }
     );
