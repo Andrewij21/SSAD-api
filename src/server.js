@@ -13,11 +13,25 @@ const PORT = process.env.PORT || 3000;
 // Accept JSON
 app.use(express.json());
 
-// Accept cors
-app.use(cors());
-
 // use cookie-parser
 app.use(cookieParser());
+
+// Accept cors
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      logger.info(`Access granted for origin ${origin}`);
+      callback(null, true);
+      // } else {
+      //   logger.error(`Access denied for origin ${origin}`);
+      //   callback(null, false);
+      // }
+    },
+    optionsSuccessStatus: 200,
+    credentials: true,
+  })
+);
 
 // Use all routes
 app.use("/api/v1/", routes);
