@@ -21,8 +21,8 @@ class AuthControllers {
       // ADD REFRESH TOKEN
       res.cookie("jwt", refreshToken, {
         httpOnly: true,
-        secure: true,
         sameSite: "None",
+        secure: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
     } catch (error) {
