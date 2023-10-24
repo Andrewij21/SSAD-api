@@ -2,7 +2,7 @@ const User = require("../models/userModel.js");
 const bcrypt = require("bcrypt");
 const { requestResponse } = require("../utils/requestResponse.js");
 const getLogger = require("../utils/logger.js");
-// const createToken = require("../utils/createToken.js");
+const createToken = require("../utils/createToken.js");
 const logger = getLogger(__filename);
 
 class AuthServices {
@@ -20,16 +20,20 @@ class AuthServices {
       roles: user.roles,
     };
 
-    // const token = await createToken(payload);
-    // user.refreshToken = token.refreshToken;
-    // await user.save();
+    const token = await createToken(payload);
+    user.refreshToken = token.refreshToken;
+    await user.save();
     logger.info(`User ${user.username} is login`);
     return {
-      // refreshToken: token.refreshToken,
       data: {
         ...requestResponse.success,
-        // data: { accessToken: token.accessToken, roles, user: user._id },
-        data: { ...payload },
+        token: {
+          refreshToken: token.refreshToken,
+          accessToken: token.accessToken,
+        },
+        roles: user.roles,
+        user: user._id,
+        username: user.username,
       },
     };
   }
