@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const connectDB = require("./config/mongoDB");
 const getLogger = require("./utils/logger");
 const routes = require("./routes");
@@ -14,6 +15,9 @@ app.use(express.json());
 
 // Accept cors
 app.use(cors());
+
+// use cookie-parser
+app.use(cookieParser());
 
 // Use all routes
 app.use("/api/v1/", routes);
