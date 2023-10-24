@@ -30,7 +30,18 @@ class AuthControllers {
     }
     checkResponse(res, response, __filename);
   }
+  async refreshToken(req, res) {
+    const cookies = req.cookies;
+    if (!cookies.jwt) return res.status(401).json({ message: "Null token" });
 
+    try {
+      const data = await authService.refreshToken(cookies.jwt);
+      response = data;
+    } catch (error) {
+      response = error;
+    }
+    checkResponse(res, response, __filename);
+  }
   async logout(req, res) {
     try {
       const cookies = req.cookies;
