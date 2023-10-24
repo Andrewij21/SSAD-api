@@ -25,15 +25,15 @@ class AuthServices {
     await user.save();
     logger.info(`User ${user.username} is login`);
     return {
+      refreshToken: token.refreshToken,
       data: {
         ...requestResponse.success,
-        token: {
-          refreshToken: token.refreshToken,
+        data: {
           accessToken: token.accessToken,
+          roles: user.roles,
+          user: user._id,
+          username: user.username,
         },
-        roles: user.roles,
-        user: user._id,
-        username: user.username,
       },
     };
   }
