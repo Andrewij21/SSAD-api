@@ -17,6 +17,7 @@ const schema = new Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  refreshToken: String,
 });
 
 module.exports = model("user", schema);
