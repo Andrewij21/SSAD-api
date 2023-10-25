@@ -29,6 +29,22 @@ class UserServices {
       data: { id: result._id, username: result.username },
     };
   }
+  async updatePassword(password, _id) {
+    if (!isValidId(_id))
+      throw { ...requestResponse.bad_request, message: "Invalid ID" };
+    const hashPassword = await bcrypt.hash(password, 10);
+    const user = await User.findOneAndUpdate(
+      { _id },
+      { password: hashPassword },
+      { new: true }
+    );
+
+    if (!user) throw { ...requestResponse.not_found };
+    console.log({ password, _id });
+    logger.info(`Update users with ID ${user._id} `);
+    return { ...requestResponse.success, data: user };
+    // return { ...requestResponse.success };
+  }
   async update(body, _id) {
     if (!isValidId(_id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };

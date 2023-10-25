@@ -60,6 +60,20 @@ class UserControllers {
     }
     checkResponse(res, response, __filename);
   }
+  async resetPasswordUser(req, res) {
+    const { password } = req.body;
+    const check = checkIfEmpty({ password });
+    if (check.status) {
+      return res.status(400).json({ message: check.msg });
+    }
+    try {
+      const data = await userService.updatePassword(password, req.params.id);
+      response = data;
+    } catch (error) {
+      response = error;
+    }
+    checkResponse(res, response, __filename);
+  }
   async deleteUser(req, res) {
     try {
       const data = await userService.delete(req.params.id);
