@@ -59,7 +59,12 @@ class AuthServices {
     logger.info(`refresh token user ${token.username}`);
     return {
       ...requestResponse.success,
-      data: { accessToken, roles: user.roles, user: user._id },
+      data: {
+        accessToken,
+        roles: user.roles,
+        user: user._id,
+        username: user.username,
+      },
     };
   }
   async delete(refreshToken) {
