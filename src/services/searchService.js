@@ -3,9 +3,14 @@ const { requestResponse } = require("../utils/requestResponse.js");
 
 class SearchService {
   search = async (payload) => {
-    const data = await User.find({
-      $or: [{ username: { $regex: payload } }],
-    });
+    // console.log({ payload });
+    const query =
+      payload != "undefined" || !payload
+        ? {
+            $or: [{ username: { $regex: payload } }],
+          }
+        : {};
+    const data = await User.find(query);
     return { ...requestResponse.success, data };
   };
 }
