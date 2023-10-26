@@ -11,7 +11,10 @@ const schema = new Schema({
     required: true,
   },
   devices: [String],
-  area: String,
+  area: {
+    type: String,
+    default: "",
+  },
   roles: {
     type: String,
     enum: ["user", "admin"],
