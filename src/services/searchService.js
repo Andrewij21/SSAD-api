@@ -7,7 +7,7 @@ class SearchService {
     const query =
       payload != "undefined" || !payload
         ? {
-            $or: [{ username: { $regex: payload } }],
+            $or: [{ area: { $regex: payload } }],
           }
         : {};
     const data = await User.find(query);
