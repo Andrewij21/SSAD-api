@@ -6,7 +6,7 @@ let response;
 class DeviceControllers {
   async searchItem(req, res) {
     try {
-      const data = await searchService.search(req.params.key);
+      const data = await searchService.search(req.query.q);
       response = data;
     } catch (error) {
       response = error;
