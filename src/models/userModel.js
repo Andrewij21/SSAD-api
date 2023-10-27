@@ -22,7 +22,8 @@ const schema = new Schema({
     prov: Object,
     kab: Object,
     desa: Object,
-    location: [],
+    latLong: [],
+    location: Object,
   },
   roles: {
     type: String,
