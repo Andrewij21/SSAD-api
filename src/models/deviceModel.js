@@ -7,7 +7,8 @@ const schema = new Schema({
     unique: true,
   },
   user: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "user",
   },
   status: {
     value: {
