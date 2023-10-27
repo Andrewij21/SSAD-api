@@ -7,7 +7,10 @@ const logger = getLogger(__filename);
 
 class DeviceServices {
   async get() {
-    const devices = await Device.find({});
+    const devices = await Device.find({}).populate({
+      path: "user",
+      select: "-password -__v -area",
+    });
     logger.info(`Get ${devices.length} device `);
     return { ...requestResponse.success, data: devices };
   }
@@ -17,6 +20,8 @@ class DeviceServices {
     return { ...requestResponse.success, data: { length: devices } };
   }
   async create(body) {
+    if (!isValidId(body.user))
+      throw { ...requestResponse.bad_request, message: "Invalid ID" };
     const exist = await Device.findOne({ name: body.name });
     if (exist) return { ...requestResponse.conflict };
 
@@ -55,6 +60,11 @@ class DeviceServices {
     console.log({ body, _id });
     if (!isValidId(_id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
+    if (!isValidId(body.user))
+      throw {
+        ...requestResponse.bad_request,
+        message: "Invalid ID " + body.user,
+      };
     const device = await Device.findOneAndUpdate(
       { _id },
       { ...body },
