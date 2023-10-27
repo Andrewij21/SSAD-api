@@ -10,8 +10,15 @@ const schema = new Schema({
     type: String,
   },
   status: {
-    type: Boolean,
-    default: false,
+    value: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: "offline",
+      enum: ["offline", "online"],
+    },
   },
   verified: {
     type: Boolean,
