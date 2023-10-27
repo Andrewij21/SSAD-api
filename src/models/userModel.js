@@ -10,6 +10,7 @@ const schema = new Schema({
     type: String,
     required: true,
   },
+  macaddress: String,
   devices: [
     {
       type: Schema.Types.ObjectId,
