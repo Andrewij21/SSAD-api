@@ -10,10 +10,18 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-  devices: [String],
+  devices: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "device",
+    },
+  ],
   area: {
-    type: String,
-    default: "",
+    kec: Object,
+    prov: Object,
+    kab: Object,
+    desa: Object,
+    location: [],
   },
   roles: {
     type: String,
