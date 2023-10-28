@@ -24,14 +24,15 @@ class DeviceControllers {
   }
 
   async createDevice(req, res) {
-    const { name, user } = req.body;
-    const check = checkIfEmpty({ name });
+    const { name, user, id } = req.body;
+    const check = checkIfEmpty({ name, id });
     if (check.status) {
       return res.status(400).json({ message: check.msg });
     }
     try {
       const data = await deviceService.create({
         name: name.trim(),
+        id: id.trim(),
         user,
       });
       response = data;
