@@ -56,6 +56,22 @@ class UserControllers {
     }
     checkResponse(res, response, __filename);
   }
+  async removeUserDevice(req, res) {
+    const { id, device } = req.body;
+    const check = checkIfEmpty({ id, device });
+    if (check.status) {
+      return res.status(400).json({ message: check.msg });
+    }
+    try {
+      const data = await userService.removeDevices({
+        ...req.body,
+      });
+      response = data;
+    } catch (error) {
+      response = error;
+    }
+    checkResponse(res, response, __filename);
+  }
 
   async updateUser(req, res) {
     const { username, password } = req.body;

@@ -30,6 +30,44 @@ class UserServices {
       data: { id: result._id, username: result.username },
     };
   }
+  async removeDevices({ id, device }) {
+    // console.log({ id, device });
+    if (!isValidId(id))
+      throw { ...requestResponse.bad_request, message: "Invalid ID" };
+    const user = await User.findById(id);
+    if (!user) throw { ...requestResponse.not_found };
+
+    const registedDevice = await Device.findOne({ id: device });
+    if (!registedDevice)
+      throw {
+        ...requestResponse.not_found,
+        message: `Device ${device} not found`,
+      };
+
+    const filteredDevice = user.devices.filter(
+      (deviceId) => registedDevice._id + "" != deviceId
+    );
+    // console.log({ filteredDevice });
+    // const addUserTodevice = await Device.findOneAndUpdate(
+    //   { _id: registedDevice._id },
+    //   { user: id },
+    //   { new: true }
+    // );
+
+    // if (!addUserTodevice)
+    //   throw {
+    //     ...requestResponse.not_found,
+    //     message: `Device ${device} not found`,
+    //   };
+    registedDevice.user = null;
+    user.devices = filteredDevice;
+
+    await user.save();
+    await registedDevice.save();
+
+    logger.info(`Update users with ID ${user._id} `);
+    return { ...requestResponse.success, data: user };
+  }
   async addDevices({ id, device }) {
     // console.log({ id, device });
     if (!isValidId(id))
