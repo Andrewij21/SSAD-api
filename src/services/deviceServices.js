@@ -20,7 +20,7 @@ class DeviceServices {
     return { ...requestResponse.success, data: { length: devices } };
   }
   async create(body) {
-    if (!isValidId(body.user))
+    if (body.user && !isValidId(body.user))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
     const exist = await Device.findOne({ name: body.name });
     if (exist) return { ...requestResponse.conflict };
