@@ -1,4 +1,5 @@
 const User = require("../models/userModel.js");
+const Device = require("../models/deviceModel.js");
 const isValidId = require("../utils/isValidId.js");
 const bcrypt = require("bcrypt");
 const { requestResponse } = require("../utils/requestResponse.js");
@@ -28,6 +29,47 @@ class UserServices {
       ...requestResponse.created,
       data: { id: result._id, username: result.username },
     };
+  }
+  async addDevices({ id, device }) {
+    // console.log({ id, device });
+    if (!isValidId(id))
+      throw { ...requestResponse.bad_request, message: "Invalid ID" };
+    const user = await User.findById(id);
+    if (!user) throw { ...requestResponse.not_found };
+
+    const registedDevice = await Device.findOne({ id: device });
+    if (!registedDevice)
+      throw {
+        ...requestResponse.not_found,
+        message: `Device ${device} not found`,
+      };
+
+    const deviceExist = user.devices.filter(
+      (deviceId) => registedDevice._id + "" == deviceId
+    );
+    // console.log({ deviceExist });
+    if (deviceExist.length != 0)
+      throw { ...requestResponse.conflict, message: "Device already register" };
+
+    // const addUserTodevice = await Device.findOneAndUpdate(
+    //   { _id: registedDevice._id },
+    //   { user: id },
+    //   { new: true }
+    // );
+
+    // if (!addUserTodevice)
+    //   throw {
+    //     ...requestResponse.not_found,
+    //     message: `Device ${device} not found`,
+    //   };
+    registedDevice.user = id;
+    user.devices.push(registedDevice._id);
+
+    await user.save();
+    await registedDevice.save();
+
+    logger.info(`Update users with ID ${user._id} `);
+    return { ...requestResponse.success, data: user };
   }
   async updatePassword(password, _id) {
     if (!isValidId(_id))
