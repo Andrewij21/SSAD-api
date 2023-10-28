@@ -67,11 +67,6 @@ class DeviceServices {
     console.log({ body, _id });
     if (!isValidId(_id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
-    if (!isValidId(body.user))
-      throw {
-        ...requestResponse.bad_request,
-        message: "Invalid ID " + body.user,
-      };
     const device = await Device.findOneAndUpdate(
       { _id },
       { ...body },
@@ -86,9 +81,24 @@ class DeviceServices {
   async delete(_id) {
     if (!isValidId(_id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
-    const device = await Device.findOneAndDelete({ _id });
 
-    if (!device) throw { ...requestResponse.not_found };
+    const device = await Device.findOneAndDelete({ _id });
+    if (!device)
+      throw { ...requestResponse.not_found, message: "device not found" };
+
+    // console.log({ device });
+    const user = await User.findById(device.user);
+    // console.log({ user });
+    // throw { ...requestResponse.not_found, message: "user not found" };
+    if (user) {
+      const filteredDevice = user.devices.filter(
+        (deviceId) => device._id.toString() != deviceId.toString()
+      );
+      // console.log({ filteredDevice });
+      user.devices = filteredDevice;
+      await user.save();
+      // console.log({ val });
+    }
 
     logger.info(`Delete   with ID ${device._id} `);
     return { ...requestResponse.success, data: device };
