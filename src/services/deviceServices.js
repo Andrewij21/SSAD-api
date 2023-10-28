@@ -1,4 +1,5 @@
 const Device = require("../models/deviceModel.js");
+const userService = require("./userServices.js");
 const isValidId = require("../utils/isValidId.js");
 const bcrypt = require("bcrypt");
 const { requestResponse } = require("../utils/requestResponse.js");
@@ -20,14 +21,25 @@ class DeviceServices {
     return { ...requestResponse.success, data: { length: devices } };
   }
   async create(body) {
-    if (body.user && !isValidId(body.user))
+    const user = body.user;
+    if (user && !isValidId(user))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
     const exist = await Device.findOne({ name: body.name });
     if (exist) return { ...requestResponse.conflict };
 
     // console.log({ body });
-    const result = await Device.create(body);
-
+    const device = await Device.create(body);
+    if (user) {
+      const updateUser = await userService.addDevices({
+        device: device._id,
+        id: user,
+      });
+      if (!updateUser)
+        return {
+          ...requestResponse.server_error,
+          message: "failed to add device to user",
+        };
+    }
     // const newDevice = new Device(body);
 
     // Push the new user to the "users" array
@@ -36,15 +48,16 @@ class DeviceServices {
     // Save the updated device
     // const result = await newDevice.save();
 
-    logger.info(`Create user with ID ${result._id}  `);
+    logger.info(`Create Device with ID ${device._id}  `);
     return {
       ...requestResponse.created,
-      data: { _id: result._id, name: result.name, user: result.user },
+      data: { _id: device._id, name: device.name, user: device.user },
     };
   }
   async addUser({ id, user }) {
     if (!isValidId(id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
+    // NEXT USER TIDAK BISA DITAMBAHKAN JIKA SUDAH ADA USER DI DALAM DATA DEVICE
     const device = await Device.findOneAndUpdate(
       { _id: id },
       { user },
