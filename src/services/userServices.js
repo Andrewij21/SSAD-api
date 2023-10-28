@@ -8,7 +8,11 @@ const logger = getLogger(__filename);
 
 class UserServices {
   async get() {
-    const users = await User.find({});
+    const users = await User.find().populate({
+      path: "devices",
+      select: "-__v",
+    });
+    // console.log(users[1]["devices"]);
     logger.info(`Get ${users.length} users `);
     return { ...requestResponse.success, data: users };
   }
