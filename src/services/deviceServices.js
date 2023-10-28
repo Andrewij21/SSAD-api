@@ -1,5 +1,5 @@
 const Device = require("../models/deviceModel.js");
-const userService = require("./userServices.js");
+const User = require("../models/userModel.js");
 const isValidId = require("../utils/isValidId.js");
 const bcrypt = require("bcrypt");
 const { requestResponse } = require("../utils/requestResponse.js");
@@ -21,32 +21,24 @@ class DeviceServices {
     return { ...requestResponse.success, data: { length: devices } };
   }
   async create(body) {
-    const user = body.user;
-    if (user && !isValidId(user))
+    const userId = body.user;
+    if (userId && !isValidId(userId))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
     const exist = await Device.findOne({ name: body.name });
     if (exist) return { ...requestResponse.conflict };
 
     // console.log({ body });
     const device = await Device.create(body);
-    if (user) {
-      const updateUser = await userService.addDevices({
-        device: device._id,
-        id: user,
-      });
-      if (!updateUser)
-        return {
-          ...requestResponse.server_error,
-          message: "failed to add device to user",
-        };
+    if (userId) {
+      // const updateUser = await userService.addDevices({
+      //   device: device._id,
+      //   id: user,
+      // });
+      const user = await User.findById(userId);
+      if (!user) throw { ...requestResponse.not_found };
+      user.devices.push(device);
+      await user.save();
     }
-    // const newDevice = new Device(body);
-
-    // Push the new user to the "users" array
-    // newDevice.users.push(body.users);
-
-    // Save the updated device
-    // const result = await newDevice.save();
 
     logger.info(`Create Device with ID ${device._id}  `);
     return {
@@ -56,6 +48,8 @@ class DeviceServices {
   }
   async addUser({ id, user }) {
     if (!isValidId(id))
+      throw { ...requestResponse.bad_request, message: "Invalid ID" };
+    if (!isValidId(user))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
     // NEXT USER TIDAK BISA DITAMBAHKAN JIKA SUDAH ADA USER DI DALAM DATA DEVICE
     const device = await Device.findOneAndUpdate(
