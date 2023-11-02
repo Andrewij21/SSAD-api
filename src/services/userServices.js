@@ -1,6 +1,7 @@
 const User = require("../models/userModel.js");
 const Device = require("../models/deviceModel.js");
 const isValidId = require("../utils/isValidId.js");
+const locationService = require("./locationServices.js");
 const bcrypt = require("bcrypt");
 const { requestResponse } = require("../utils/requestResponse.js");
 const getLogger = require("../utils/logger.js");
@@ -65,6 +66,7 @@ class UserServices {
     //   };
     registedDevice.user = null;
     user.devices = filteredDevice;
+    user.area = {}; // empty area
 
     await user.save();
     await registedDevice.save();
@@ -72,7 +74,7 @@ class UserServices {
     logger.info(`Update users with ID ${user._id} `);
     return { ...requestResponse.success, data: user };
   }
-  async addDevices({ id, device }) {
+  async addDevices({ id, device, latLng }) {
     // console.log({ id, device });
     if (!isValidId(id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
@@ -104,8 +106,23 @@ class UserServices {
     //     ...requestResponse.not_found,
     //     message: `Device ${device} not found`,
     //   };
+    const getLocation = await locationService.get(latLng);
+    if (getLocation.code !== 200) throw getLocation;
+
+    const {
+      area: { city, region, road, state, village },
+      formatedLoc,
+    } = getLocation;
+
     registedDevice.user = id;
     user.devices.push(registedDevice._id);
+    user.area.pulau = region;
+    user.area.kota = city;
+    user.area.jalan = road;
+    user.area.prov = state;
+    user.area.desa = village;
+    user.area.latLong = [latLng.lat, latLng.lng];
+    user.area.location = formatedLoc;
 
     await user.save();
     await registedDevice.save();
