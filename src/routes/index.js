@@ -4,6 +4,7 @@ const userRoutes = require("./userRoutes");
 const authRoutes = require("./authRoutes");
 const registerRoutes = require("./registerRoutes");
 const searchRoutes = require("./searchRoutes");
+const locationRoutes = require("./locationRoutes");
 // const refreshTokenRoutes = require("./refreshTokenRoutes");
 const verifyJwt = require("../middlewares/verifyJwt");
 // const verifyRoles = require("../middlewares/verifyRoles");
@@ -19,6 +20,7 @@ router.use("/register", registerRoutes);
 router.use(verifyJwt);
 router.use("/search", searchRoutes);
 router.use("/device", deviceRoutes);
+router.use("/location", locationRoutes);
 router.use("/user", userRoutes);
 
 module.exports = router;

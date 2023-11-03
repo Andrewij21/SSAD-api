@@ -1,4 +1,5 @@
 const { requestResponse } = require("../utils/requestResponse.js");
+const Device = require("../models/deviceModel.js");
 const getLogger = require("../utils/logger.js");
 const fetch = require("node-fetch");
 const logger = getLogger(__filename);
@@ -22,6 +23,13 @@ class LocationServices {
       .catch((err) => {
         throw { ...requestResponse.bad_request, error: err.status };
       });
+  }
+
+  async getDevice() {
+    const data = await Device.find().select("area.latLong area.location name");
+
+    logger.info(`Get ${data.length} device locations `);
+    return { ...requestResponse.success, data };
   }
 }
 
