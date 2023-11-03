@@ -42,7 +42,7 @@ class UserServices {
     const user = await User.findById(id);
     if (!user) throw { ...requestResponse.not_found };
 
-    const registedDevice = await Device.findOne({ id: device });
+    const registedDevice = await Device.findOne({ macaddress: device });
     if (!registedDevice)
       throw {
         ...requestResponse.not_found,
@@ -81,7 +81,7 @@ class UserServices {
     const user = await User.findById(id);
     if (!user) throw { ...requestResponse.not_found };
 
-    const registedDevice = await Device.findOne({ id: device });
+    const registedDevice = await Device.findOne({ macaddress: device });
     if (!registedDevice)
       throw {
         ...requestResponse.not_found,
