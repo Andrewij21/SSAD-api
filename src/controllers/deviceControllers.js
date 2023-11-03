@@ -33,7 +33,7 @@ class DeviceControllers {
       const data = await deviceService.create({
         name: name.trim(),
         macaddress: macaddress.trim(),
-        user,
+        ...req.body,
       });
       response = data;
     } catch (error) {
