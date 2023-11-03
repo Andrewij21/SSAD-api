@@ -1,6 +1,7 @@
 const Device = require("../models/deviceModel.js");
 const User = require("../models/userModel.js");
 const isValidId = require("../utils/isValidId.js");
+const locationService = require("./locationServices.js");
 const bcrypt = require("bcrypt");
 const { requestResponse } = require("../utils/requestResponse.js");
 const getLogger = require("../utils/logger.js");
@@ -27,8 +28,26 @@ class DeviceServices {
     const exist = await Device.findOne({ name: body.name });
     if (exist) return { ...requestResponse.conflict };
 
+    const getLocation = await locationService.get(body.latLng);
+    if (getLocation.code !== 200) throw getLocation;
+
+    const {
+      area: { city, region, road, state, village },
+      formatedLoc,
+    } = getLocation;
+
+    const area = {
+      pulau: region,
+      kota: city,
+      jalan: road,
+      prov: state,
+      desa: village,
+      latLong: [body.latLng.lat, body.latLng.lng],
+      location: formatedLoc,
+    };
+
     // console.log({ body });
-    const device = await Device.create(body);
+    const device = await Device.create({ ...body, area });
     if (userId) {
       // const updateUser = await userService.addDevices({
       //   device: device._id,
