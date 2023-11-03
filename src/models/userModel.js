@@ -17,17 +17,6 @@ const schema = new Schema({
       ref: "device",
     },
   ],
-  area: {
-    kec: Object,
-    prov: Object,
-    kab: Object,
-    desa: Object,
-    pulau: Object,
-    kota: Object,
-    jalan: Object,
-    latLong: [],
-    location: Object,
-  },
   roles: {
     type: String,
     enum: ["user", "admin"],
