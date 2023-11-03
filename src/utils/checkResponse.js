@@ -9,7 +9,7 @@ function checkResponse(res, data, filename) {
       error: requestResponse.server_error,
     });
   }
-  return res.status(data.code).json(data);
+  return res.status(data.code || 500).json(data);
 }
 
 module.exports = checkResponse;
