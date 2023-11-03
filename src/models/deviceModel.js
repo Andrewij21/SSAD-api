@@ -22,6 +22,17 @@ const schema = new Schema({
       enum: ["offline", "online"],
     },
   },
+  area: {
+    kec: Object,
+    prov: Object,
+    kab: Object,
+    desa: Object,
+    pulau: Object,
+    kota: Object,
+    jalan: Object,
+    latLong: [],
+    location: Object,
+  },
   verified: {
     type: Boolean,
     default: false,
