@@ -1,7 +1,7 @@
 const User = require("../models/userModel.js");
 const Device = require("../models/deviceModel.js");
 const isValidId = require("../utils/isValidId.js");
-const locationService = require("./locationServices.js");
+// const locationService = require("./locationServices.js");
 const bcrypt = require("bcrypt");
 const { requestResponse } = require("../utils/requestResponse.js");
 const getLogger = require("../utils/logger.js");
@@ -66,7 +66,7 @@ class UserServices {
     //   };
     registedDevice.user = null;
     user.devices = filteredDevice;
-    user.area = {}; // empty area
+    // user.area = {}; // empty area
 
     await user.save();
     await registedDevice.save();
@@ -95,34 +95,23 @@ class UserServices {
     if (deviceExist.length != 0)
       throw { ...requestResponse.conflict, message: "Device already register" };
 
-    // const addUserTodevice = await Device.findOneAndUpdate(
-    //   { _id: registedDevice._id },
-    //   { user: id },
-    //   { new: true }
-    // );
+    // const getLocation = await locationService.get(latLng);
+    // if (getLocation.code !== 200) throw getLocation;
 
-    // if (!addUserTodevice)
-    //   throw {
-    //     ...requestResponse.not_found,
-    //     message: `Device ${device} not found`,
-    //   };
-    const getLocation = await locationService.get(latLng);
-    if (getLocation.code !== 200) throw getLocation;
-
-    const {
-      area: { city, region, road, state, village },
-      formatedLoc,
-    } = getLocation;
+    // const {
+    //   area: { city, region, road, state, village },
+    //   formatedLoc,
+    // } = getLocation;
 
     registedDevice.user = id;
     user.devices.push(registedDevice._id);
-    user.area.pulau = region;
-    user.area.kota = city;
-    user.area.jalan = road;
-    user.area.prov = state;
-    user.area.desa = village;
-    user.area.latLong = [latLng.lat, latLng.lng];
-    user.area.location = formatedLoc;
+    // user.area.pulau = region;
+    // user.area.kota = city;
+    // user.area.jalan = road;
+    // user.area.prov = state;
+    // user.area.desa = village;
+    // user.area.latLong = [latLng.lat, latLng.lng];
+    // user.area.location = formatedLoc;
 
     await user.save();
     await registedDevice.save();
