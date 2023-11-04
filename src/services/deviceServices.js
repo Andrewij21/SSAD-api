@@ -8,8 +8,13 @@ const getLogger = require("../utils/logger.js");
 const logger = getLogger(__filename);
 
 class DeviceServices {
-  async get() {
-    const devices = await Device.find({}).populate({
+  async get(payload) {
+    const query = payload
+      ? {
+          $or: [{ "area.location": { $regex: payload, $options: "i" } }], //SEARCH BASED ON AREA AND CASE INSENSITIVE
+        }
+      : {};
+    const devices = await Device.find(query).populate({
       path: "user",
       select: "-password -__v -area",
     });
@@ -23,28 +28,31 @@ class DeviceServices {
   }
   async create(body) {
     const userId = body.user;
+    let area = {};
     if (userId && !isValidId(userId))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
     const exist = await Device.findOne({ name: body.name });
     if (exist) return { ...requestResponse.conflict };
 
-    const getLocation = await locationService.get(body.latLng);
-    if (getLocation.code !== 200) throw getLocation;
+    if (body.latLng) {
+      const getLocation = await locationService.get(body.latLng);
+      if (getLocation.code !== 200) throw getLocation;
 
-    const {
-      area: { city, region, road, state, village },
-      formatedLoc,
-    } = getLocation;
+      const {
+        area: { city, region, road, state, village },
+        formatedLoc,
+      } = getLocation;
 
-    const area = {
-      pulau: region,
-      kota: city,
-      jalan: road,
-      prov: state,
-      desa: village,
-      latLong: [body.latLng.lat, body.latLng.lng],
-      location: formatedLoc,
-    };
+      area = {
+        pulau: region,
+        kota: city,
+        jalan: road,
+        prov: state,
+        desa: village,
+        latLong: [body.latLng.lat, body.latLng.lng],
+        location: formatedLoc,
+      };
+    }
 
     // console.log({ body });
     const device = await Device.create({ ...body, area });
@@ -62,7 +70,12 @@ class DeviceServices {
     logger.info(`Create Device with ID ${device._id}  `);
     return {
       ...requestResponse.created,
-      data: { _id: device._id, name: device.name, user: device.user },
+      data: {
+        _id: device._id,
+        name: device.name,
+        user: device.user,
+        macaddress: device.macaddress,
+      },
     };
   }
   async addUser({ id, user }) {
