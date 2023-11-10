@@ -12,7 +12,7 @@ class UserServices {
     const users = await User.find().populate({
       path: "devices",
       select: "-__v",
-    });
+    }).select("-__v -password");
     // console.log(users[1]["devices"]);
     logger.info(`Get ${users.length} users `);
     return { ...requestResponse.success, data: users };
