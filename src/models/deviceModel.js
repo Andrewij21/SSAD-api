@@ -22,6 +22,20 @@ const schema = new Schema({
       enum: ["offline", "online"],
     },
   },
+  set:{
+    rak1:{
+      tanaman:Object,
+      mediaTumbuh:Object
+    },
+    rak2:{
+      tanaman:Object,
+      mediaTumbuh:Object
+    },
+    rak3:{
+      tanaman:Object,
+      mediaTumbuh:Object
+    },
+  },
   area: {
     kec: Object,
     prov: Object,
