@@ -9,10 +9,12 @@ const logger = getLogger(__filename);
 
 class UserServices {
   async get() {
-    const users = await User.find().populate({
-      path: "devices",
-      select: "-__v",
-    }).select("-__v -password");
+    const users = await User.find()
+      .populate({
+        path: "devices",
+        select: "-__v",
+      })
+      .select("-__v -password");
     // console.log(users[1]["devices"]);
     logger.info(`Get ${users.length} users `);
     return { ...requestResponse.success, data: users };
@@ -78,7 +80,7 @@ class UserServices {
     // console.log({ id, device });
     if (!isValidId(id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
-    const user = await User.findById(id);
+    const user = await User.findById(id).select("-password -__v");
     if (!user) throw { ...requestResponse.not_found };
 
     const registedDevice = await Device.findOne({ macaddress: device });
