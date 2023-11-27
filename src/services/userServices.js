@@ -80,7 +80,7 @@ class UserServices {
     // console.log({ id, device });
     if (!isValidId(id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
-    const user = await User.findById(id).select("-password -__v");
+    const user = await User.findById(id).select("-password -__v -refreshToken");
     if (!user) throw { ...requestResponse.not_found };
 
     const registedDevice = await Device.findOne({ macaddress: device });
@@ -157,6 +157,14 @@ class UserServices {
     const user = await User.findOneAndDelete({ _id });
 
     if (!user) throw { ...requestResponse.not_found };
+
+    if (user.devices && user.devices.length > 0) {
+      const deviceIds = user.devices;
+      await Device.updateMany(
+        { _id: { $in: deviceIds } },
+        { $set: { user: null } }
+      );
+    }
 
     logger.info(`Delete with ID ${user._id} `);
     return { ...requestResponse.success, data: user };
