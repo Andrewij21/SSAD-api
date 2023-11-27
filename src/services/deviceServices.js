@@ -81,6 +81,7 @@ class DeviceServices {
         name: device.name,
         user: device.user,
         macaddress: device.macaddress,
+        location: device.area.location,
       },
     };
   }
