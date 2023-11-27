@@ -34,28 +34,33 @@ class DeviceServices {
     const exist = await Device.findOne({ name: body.name });
     if (exist) return { ...requestResponse.conflict };
 
-    if (body.latLng) {
-      const getLocation = await locationService.get(body.latLng);
-      if (getLocation.code !== 200) throw getLocation;
-
-      const {
-        area: { city, region, road, state, village },
-        formatedLoc,
-      } = getLocation;
-
+    if (body.location) {
       area = {
-        pulau: region,
-        kota: city,
-        jalan: road,
-        prov: state,
-        desa: village,
-        latLong: [body.latLng.lat, body.latLng.lng],
-        location: formatedLoc,
+        location: body.location,
       };
-    }
 
+      if (body.latLng) {
+        const getLocation = await locationService.get(body.latLng);
+        if (getLocation.code !== 200) throw getLocation;
+
+        const {
+          area: { city, region, road, state, village },
+          formatedLoc,
+        } = getLocation;
+
+        area = {
+          pulau: region,
+          kota: city,
+          jalan: road,
+          prov: state,
+          desa: village,
+          latLong: [body.latLng.lat, body.latLng.lng],
+          location: formatedLoc,
+        };
+      }
+    }
     // console.log({ body });
-    const device = await Device.create({ ...body, area });
+    const device = await Device.create({ ...body, area, user: userId || null });
     if (userId) {
       // const updateUser = await userService.addDevices({
       //   device: device._id,
