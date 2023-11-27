@@ -42,10 +42,10 @@ class UserControllers {
   }
   async addUserDevice(req, res) {
     const { id, device } = req.body;
-    // const check = checkIfEmpty({ username, password });
-    // if (check.status) {
-    //   return res.status(400).json({ message: check.msg });
-    // }
+    const check = checkIfEmpty({ id, device });
+    if (check.status) {
+      return res.status(400).json({ message: check.msg });
+    }
     try {
       const data = await userService.addDevices({
         ...req.body,
