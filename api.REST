@@ -1,5 +1,6 @@
 @BASE_URI = http://localhost:3000/api/v1
 
+
 POST {{BASE_URI}}/device
 Content-Type: application/json
 
@@ -21,5 +22,22 @@ Content-Type: application/json
 
 {
     "username":"admin",
+    "password":"123"
+}
+###
+PATCH {{BASE_URI}}/user/device
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJyb2xlcyI6InVzZXIiLCJ1c2VyIjoiNjU0NDdlZTdjY2QxY2JhMWIzM2I2MGY2IiwiaWF0IjoxNzAxMDY0ODgxLCJleHAiOjE3MDEwNjg0ODF9._r7EaGW_vN9Pk9I4ESGLk4Vh49Vj9IKYioxN_VW-IME
+
+{
+    "id":"65447ee7ccd1cba1b33b60f6",
+    "device":"00-B0-D0-63-C2-27"
+}
+###
+POST {{BASE_URI}}/auth
+Content-Type: application/json
+
+{
+    "username":"user",
     "password":"123"
 }
