@@ -30,9 +30,10 @@ class DeviceServices {
     const userId = body.user;
     let area = {};
     if (userId && !isValidId(userId))
-      throw { ...requestResponse.bad_request, message: "Invalid ID" };
+      throw { ...requestResponse.bad_request, message: "Invalid user ID" };
     const exist = await Device.findOne({ name: body.name });
-    if (exist) return { ...requestResponse.conflict };
+    if (exist)
+      return { ...requestResponse.conflict, message: "device already exist" };
 
     if (body.location) {
       area = {
