@@ -103,12 +103,12 @@ class DeviceServices {
     return { ...requestResponse.success, data: device };
   }
   async update(body, _id) {
-    console.log({ body, _id });
+    // console.log({ body, _id });
     if (!isValidId(_id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
     const device = await Device.findOneAndUpdate(
       { _id },
-      { ...body },
+      { ...body, user: body.user || null },
       { new: true }
     );
 
