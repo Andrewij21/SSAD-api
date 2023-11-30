@@ -7,7 +7,7 @@ class AuthControllers {
   async login(req, res) {
     const { username, password } = req.body;
     console.log("body", req.body);
-    const check = checkIfEmpty([username, password]);
+    const check = checkIfEmpty({ username, password });
     if (check.status) {
       return res.status(400).json({ message: check.msg });
     }
