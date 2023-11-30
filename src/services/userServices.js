@@ -146,7 +146,9 @@ class UserServices {
       const hashPassword = await bcrypt.hash(body.password, 10);
       data = { ...body, password: hashPassword };
     }
-    const user = await User.findOneAndUpdate({ _id }, data, { new: true });
+    const user = await User.findOneAndUpdate({ _id }, data, {
+      new: true,
+    }).select("-password -refreshToken");
 
     if (!user) throw { ...requestResponse.not_found };
 
