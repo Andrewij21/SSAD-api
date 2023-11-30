@@ -2,7 +2,7 @@ function isNullOrWhitespace(input) {
   const emptyFileds = [];
 
   for (const field in input) {
-    if (!field || /^\s*$/.test(input[field])) {
+    if (!input[field] || /^\s*$/.test(input[field])) {
       emptyFileds.push(field);
     }
   }
