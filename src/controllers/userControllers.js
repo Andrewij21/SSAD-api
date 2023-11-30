@@ -3,6 +3,7 @@ const checkIfEmpty = require("../utils/checkIfEmpty");
 const checkResponse = require("../utils/checkResponse");
 
 let response;
+const ROLES = { admin: "admin", user: "user" };
 class UserControllers {
   async getUser(req, res) {
     try {
@@ -23,10 +24,13 @@ class UserControllers {
     checkResponse(res, response, __filename);
   }
   async createUser(req, res) {
-    const { username, password } = req.body;
+    const { username, password, roles } = req.body;
     const check = checkIfEmpty({ username, password });
     if (check.status) {
       return res.status(400).json({ message: check.msg });
+    }
+    if (!ROLES[roles]) {
+      delete req.body.roles;
     }
     try {
       const data = await userService.create({
