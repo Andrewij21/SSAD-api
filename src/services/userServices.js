@@ -140,11 +140,13 @@ class UserServices {
   async update(body, _id) {
     if (!isValidId(_id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
-    const user = await User.findOneAndUpdate(
-      { _id },
-      { ...body },
-      { new: true }
-    );
+
+    let data = { ...body };
+    if (body.password) {
+      const hashPassword = await bcrypt.hash(body.password, 10);
+      data = { ...body, password: hashPassword };
+    }
+    const user = await User.findOneAndUpdate({ _id }, data, { new: true });
 
     if (!user) throw { ...requestResponse.not_found };
 
