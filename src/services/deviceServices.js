@@ -124,7 +124,7 @@ class DeviceServices {
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
 
     if (
-      body.status.hasOwnProperty("message") &&
+      body?.status?.hasOwnProperty("message") &&
       !STATUS.includes(body.status.message)
     )
       throw {
@@ -133,7 +133,7 @@ class DeviceServices {
       };
 
     if (
-      body.status.hasOwnProperty("value") &&
+      body?.status?.hasOwnProperty("value") &&
       typeof body.status.value !== "boolean"
     )
       throw {
