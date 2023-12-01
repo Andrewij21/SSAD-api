@@ -7,6 +7,8 @@ const { requestResponse } = require("../utils/requestResponse.js");
 const getLogger = require("../utils/logger.js");
 const logger = getLogger(__filename);
 
+const STATUS = ["online", "offline"];
+
 class DeviceServices {
   async get(payload) {
     const query = payload
@@ -104,13 +106,31 @@ class DeviceServices {
     return { ...requestResponse.success, data: device };
   }
   async update(body, _id) {
-    // console.log({ body, _id });
     if (!isValidId(_id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
+
+    if (
+      body.status.hasOwnProperty("message") &&
+      !STATUS.includes(body.status.message)
+    )
+      throw {
+        ...requestResponse.bad_request,
+        message: "status message invalid please input(online or offline) ",
+      };
+
+    if (
+      body.status.hasOwnProperty("value") &&
+      typeof body.status.value !== "boolean"
+    )
+      throw {
+        ...requestResponse.bad_request,
+        message: "status value is need to be boolean",
+      };
+
     const device = await Device.findOneAndUpdate(
       { _id },
       { ...body, user: body.user || null },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!device) throw { ...requestResponse.not_found };
