@@ -16,7 +16,7 @@ class DeviceServices {
       : {};
     const devices = await Device.find(query).populate({
       path: "user",
-      select: "-password -__v -area",
+      select: "-password -__v -area -refreshToken -devices",
     });
     logger.info(`Get ${devices.length} device `);
     return { ...requestResponse.success, data: devices };
