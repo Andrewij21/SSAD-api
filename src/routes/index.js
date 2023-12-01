@@ -18,7 +18,7 @@ router.use("/auth", authRoutes);
 router.use("/register", registerRoutes);
 
 router.use(verifyJwt);
-router.use("/search", searchRoutes);
+// router.use("/search", searchRoutes); //turn off for now
 router.use("/device", deviceRoutes);
 router.use("/location", locationRoutes);
 router.use("/user", userRoutes);
