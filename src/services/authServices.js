@@ -42,18 +42,15 @@ class AuthServices {
   async refreshToken(refreshToken) {
     const user = await User.findOne({ refreshToken }).select("-password -__v");
     if (!user) return { ...requestResponse.forbidden };
-    const token = await jwt.verify(
-      refreshToken,
-      process.env.SECRET_REFRESH_TOKEN
-    );
+
+    const token = jwt.verify(refreshToken, process.env.SECRET_REFRESH_TOKEN);
     if (!token || token.username !== user.username)
       return { ...requestResponse.forbidden };
 
-    // const roles = Object.values(user.roles).filter(Boolean);
     const accessToken = jwt.sign(
       { username: token.username, roles: user.roles, user: user._id },
       process.env.SECRET_ACCESS_TOKEN,
-      { expiresIn: "10s" }
+      { expiresIn: "1h" }
     );
 
     logger.info(`refresh token user ${token.username}`);
