@@ -19,12 +19,16 @@ class UserServices {
       .limit(perpage)
       .skip((page - 1) * perpage);
 
+    const totalUsers = await User.count();
+    const totalPages = Math.ceil(totalUsers / perpage);
+
     logger.info(`Get ${users.length} users `);
     return {
       ...requestResponse.success,
       length: users.length,
       page,
       perpage,
+      totalPages,
       data: users,
     };
   }
