@@ -7,7 +7,8 @@ const ROLES = { admin: "admin", user: "user" };
 class UserControllers {
   async getUser(req, res) {
     try {
-      const data = await userService.get();
+      const { page, perpage } = req.query;
+      const data = await userService.get({ page, perpage });
       response = data;
     } catch (error) {
       response = error;

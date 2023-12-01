@@ -8,16 +8,25 @@ const getLogger = require("../utils/logger.js");
 const logger = getLogger(__filename);
 
 class UserServices {
-  async get() {
+  async get({ page = 1, perpage = 0 }) {
+    console.log({ page, perpage });
     const users = await User.find()
       .populate({
         path: "devices",
         select: "-__v",
       })
-      .select("-__v -password");
-    // console.log(users[1]["devices"]);
+      .select("-__v -password")
+      .limit(perpage)
+      .skip((page - 1) * perpage);
+
     logger.info(`Get ${users.length} users `);
-    return { ...requestResponse.success, data: users };
+    return {
+      ...requestResponse.success,
+      length: users.length,
+      page,
+      perpage,
+      data: users,
+    };
   }
   async getCount() {
     const users = await User.find({}).count();
