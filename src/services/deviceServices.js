@@ -22,7 +22,8 @@ class DeviceServices {
     return { ...requestResponse.success, data: devices };
   }
   async getCount() {
-    const devices = await Device.find({}).count();
+    const devices = await Device.count();
+
     logger.info(`Get ${devices} device `);
     return { ...requestResponse.success, data: { length: devices } };
   }
