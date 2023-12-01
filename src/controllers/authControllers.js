@@ -45,10 +45,12 @@ class AuthControllers {
   async logout(req, res) {
     try {
       const cookies = req.cookies;
+      // 204 MEANS SERVER FULFILLED THE REQUEST AND NO ADDITIONAL PAYLOAD RESPONSE
       if (!cookies.jwt) return res.sendStatus(204);
       const data = await authService.delete(cookies.jwt);
       response = data;
 
+      // REMOVE COOKIE FROM SESSION STORAGE
       res.clearCookie("jwt", {
         httpOnly: true,
         sameSite: "None",
