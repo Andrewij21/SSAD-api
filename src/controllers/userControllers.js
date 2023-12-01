@@ -80,7 +80,8 @@ class UserControllers {
 
   async updateUser(req, res) {
     const { username, password } = req.body;
-    const check = checkIfEmpty({ username, password });
+    const checkPassword = password == undefined ? 1 : password;
+    const check = checkIfEmpty({ username, password: checkPassword });
     if (check.status) {
       return res.status(400).json({ message: check.msg });
     }
