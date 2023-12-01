@@ -126,18 +126,15 @@ class DeviceServices {
     if (!device)
       throw { ...requestResponse.not_found, message: "device not found" };
 
-    // console.log({ device });
     const user = await User.findById(device.user);
-    // console.log({ user });
-    // throw { ...requestResponse.not_found, message: "user not found" };
+
     if (user) {
+      //REMOVE DEVICE FROM USER THAT HAVE THIS DEVICE
       const filteredDevice = user.devices.filter(
         (deviceId) => device._id.toString() != deviceId.toString()
       );
-      // console.log({ filteredDevice });
       user.devices = filteredDevice;
       await user.save();
-      // console.log({ val });
     }
 
     logger.info(`Delete   with ID ${device._id} `);
