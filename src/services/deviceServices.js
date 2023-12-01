@@ -10,18 +10,32 @@ const logger = getLogger(__filename);
 const STATUS = ["online", "offline"];
 
 class DeviceServices {
-  async get(payload) {
-    const query = payload
+  async get({ q, page = 1, perpage = 5 }) {
+    const query = q
       ? {
           $or: [{ "area.location": { $regex: payload, $options: "i" } }], //SEARCH BASED ON AREA AND CASE INSENSITIVE
         }
       : {};
-    const devices = await Device.find(query).populate({
-      path: "user",
-      select: "-password -__v -area -refreshToken -devices",
-    });
+    const devices = await Device.find(query)
+      .populate({
+        path: "user",
+        select: "-password -__v -area -refreshToken -devices",
+      })
+      .select("-__v")
+      .limit(perpage)
+      .skip((page - 1) * perpage);
+
+    const totalDevices = await Device.count();
+    const totalPages = Math.ceil(totalDevices / perpage);
+
     logger.info(`Get ${devices.length} device `);
-    return { ...requestResponse.success, data: devices };
+    return {
+      ...requestResponse.success,
+      page,
+      perpage,
+      totalPages,
+      data: devices,
+    };
   }
   async getCount() {
     const devices = await Device.count();

@@ -5,9 +5,9 @@ const checkResponse = require("../utils/checkResponse");
 let response;
 class DeviceControllers {
   async getDevice(req, res) {
-    const { q } = req.query;
+    const { page, perpage, q } = req.query;
     try {
-      const data = await deviceService.get(q);
+      const data = await deviceService.get({ q, page, perpage });
       response = data;
     } catch (error) {
       response = error;
