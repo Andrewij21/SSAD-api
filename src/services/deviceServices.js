@@ -13,7 +13,7 @@ class DeviceServices {
   async get({ q, page = 1, perpage = 5 }) {
     const query = q
       ? {
-          $or: [{ "area.location": { $regex: payload, $options: "i" } }], //SEARCH BASED ON AREA AND CASE INSENSITIVE
+          $or: [{ "area.location": { $regex: q, $options: "i" } }], //SEARCH BASED ON AREA AND CASE INSENSITIVE
         }
       : {};
     const devices = await Device.find(query)
