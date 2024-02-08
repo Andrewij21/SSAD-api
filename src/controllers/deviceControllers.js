@@ -23,6 +23,15 @@ class DeviceControllers {
     }
     checkResponse(res, response, __filename);
   }
+  async findDevice(req, res) {
+    try {
+      const data = await deviceService.find(req.params.id);
+      response = data;
+    } catch (error) {
+      response = error;
+    }
+    checkResponse(res, response, __filename);
+  }
 
   async createDevice(req, res) {
     const { name, user, macaddress } = req.body;

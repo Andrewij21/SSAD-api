@@ -11,6 +11,7 @@ router.route("/count").get(deviceController.getDeviceCount);
 
 router
   .route("/:id")
+  .get(deviceController.findDevice)
   .patch(deviceController.updateDevice)
   .delete(deviceController.deleteDevice);
 module.exports = router;

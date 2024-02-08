@@ -57,8 +57,8 @@ class DeviceServices {
         location: body.location,
       };
 
-      if (body.latLng) {
-        const getLocation = await locationService.get(body.latLng);
+      if (body.location.latLng) {
+        const getLocation = await locationService.get(body.location.latLng);
         if (getLocation.code !== 200) throw getLocation;
 
         const {
@@ -72,7 +72,7 @@ class DeviceServices {
           jalan: road,
           prov: state,
           desa: village,
-          latLong: [body.latLng.lat, body.latLng.lng],
+          latLong: [body.location.latLng.lat, body.location.latLng.lng],
           location: formatedLoc,
         };
       }
@@ -173,6 +173,20 @@ class DeviceServices {
 
     logger.info(`Delete   with ID ${device._id} `);
     return { ...requestResponse.success, data: device };
+  }
+  async find(id) {
+    console.log({ id });
+    if (id && !isValidId(id))
+      throw { ...requestResponse.bad_request, message: "Invalid user ID" };
+    const exist = await Device.findOne({ _id: id }).populate({
+      path: "user",
+      select: "-password -__v -area -refreshToken -devices",
+    });
+    if (!exist)
+      return { ...requestResponse.not_found, message: "device not found" };
+
+    logger.info(`Get ${id} device `);
+    return { ...requestResponse.success, data: exist };
   }
 }
 
