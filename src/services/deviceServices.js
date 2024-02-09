@@ -120,9 +120,12 @@ class DeviceServices {
     return { ...requestResponse.success, data: device };
   }
   async update(body, _id) {
-    if (!isValidId(_id))
-      throw { ...requestResponse.bad_request, message: "Invalid ID" };
-
+    let query = {};
+    if (_id && !isValidId(_id)) {
+      query = { macaddress: _id };
+    } else {
+      query = { _id };
+    }
     if (
       body?.status?.hasOwnProperty("message") &&
       !STATUS.includes(body.status.message)
@@ -142,7 +145,7 @@ class DeviceServices {
       };
 
     const device = await Device.findOneAndUpdate(
-      { _id },
+      query,
       { ...body, user: body.user || null },
       { new: true, runValidators: true }
     );
@@ -150,6 +153,25 @@ class DeviceServices {
     if (!device) throw { ...requestResponse.not_found };
 
     logger.info(`Update users with ID ${device._id} `);
+    return { ...requestResponse.success, data: device };
+  }
+  async updateRPM(body, id) {
+    let query = {};
+    if (id && !isValidId(id)) {
+      query = { macaddress: id };
+    } else {
+      query = { id };
+    }
+
+    const device = await Device.findOneAndUpdate(
+      query,
+      { RPM: body.RPM },
+      { new: true, runValidators: true }
+    );
+
+    if (!device) throw { ...requestResponse.not_found };
+
+    logger.info(`Update Device RPM with ID ${device.id}`);
     return { ...requestResponse.success, data: device };
   }
   async delete(_id) {
@@ -175,10 +197,14 @@ class DeviceServices {
     return { ...requestResponse.success, data: device };
   }
   async find(id) {
-    console.log({ id });
-    if (id && !isValidId(id))
-      throw { ...requestResponse.bad_request, message: "Invalid user ID" };
-    const exist = await Device.findOne({ _id: id }).populate({
+    // console.log({ id });
+    let query = {};
+    if (id && !isValidId(id)) {
+      query = { macaddress: id };
+    } else {
+      query = { _id: id };
+    }
+    const exist = await Device.findOne(query).populate({
       path: "user",
       select: "-password -__v -area -refreshToken -devices",
     });

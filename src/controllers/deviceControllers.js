@@ -83,6 +83,20 @@ class DeviceControllers {
     }
     checkResponse(res, response, __filename);
   }
+  async updateDeviceRPM(req, res) {
+    try {
+      const data = await deviceService.updateRPM(
+        {
+          ...req.body,
+        },
+        req.params.id
+      );
+      response = data;
+    } catch (error) {
+      response = error;
+    }
+    checkResponse(res, response, __filename);
+  }
   async deleteDevice(req, res) {
     try {
       const data = await deviceService.delete(req.params.id);
