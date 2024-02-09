@@ -148,7 +148,10 @@ class DeviceServices {
       query,
       { ...body, user: body.user || null },
       { new: true, runValidators: true }
-    );
+    ).populate({
+      path: "user",
+      select: "-password -__v -area -refreshToken -devices",
+    });
 
     if (!device) throw { ...requestResponse.not_found };
 
