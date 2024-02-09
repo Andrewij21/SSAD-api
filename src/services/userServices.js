@@ -186,6 +186,24 @@ class UserServices {
     logger.info(`Delete with ID ${user._id} `);
     return { ...requestResponse.success, data: user };
   }
+  async find(id) {
+    // console.log({ id });
+    let query = {};
+    if (id && !isValidId(id)) {
+      query = { username: id };
+    } else {
+      query = { _id: id };
+    }
+    const exist = await User.findOne(query).populate({
+      path: "devices",
+      select: "-RPM -__v -status -verified -set -user",
+    });
+    if (!exist)
+      return { ...requestResponse.not_found, message: "user not found" };
+
+    logger.info(`Get ${id} user `);
+    return { ...requestResponse.success, data: exist };
+  }
 }
 
 module.exports = new UserServices();

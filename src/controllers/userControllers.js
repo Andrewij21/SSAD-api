@@ -24,6 +24,15 @@ class UserControllers {
     }
     checkResponse(res, response, __filename);
   }
+  async findUser(req, res) {
+    try {
+      const data = await userService.find(req.params.id);
+      response = data;
+    } catch (error) {
+      response = error;
+    }
+    checkResponse(res, response, __filename);
+  }
   async createUser(req, res) {
     const { username, password, roles } = req.body;
     const check = checkIfEmpty({ username, password });
@@ -79,9 +88,9 @@ class UserControllers {
   }
 
   async updateUser(req, res) {
-    const { username, password } = req.body;
+    const { password } = req.body;
     const checkPassword = password == undefined ? 1 : password;
-    const check = checkIfEmpty({ username, password: checkPassword });
+    const check = checkIfEmpty({ password: checkPassword });
     if (check.status) {
       return res.status(400).json({ message: check.msg });
     }
