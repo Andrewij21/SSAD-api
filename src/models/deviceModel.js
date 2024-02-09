@@ -22,18 +22,21 @@ const schema = new Schema({
       enum: ["offline", "online"],
     },
   },
-  set:{
-    rak1:{
-      tanaman:Object,
-      mediaTumbuh:Object
+  set: {
+    rak1: {
+      tanaman: Object,
+      mediaTumbuh: Object,
+      weight: Object,
     },
-    rak2:{
-      tanaman:Object,
-      mediaTumbuh:Object
+    rak2: {
+      tanaman: Object,
+      mediaTumbuh: Object,
+      weight: Object,
     },
-    rak3:{
-      tanaman:Object,
-      mediaTumbuh:Object
+    rak3: {
+      tanaman: Object,
+      mediaTumbuh: Object,
+      weight: Object,
     },
   },
   area: {
@@ -51,6 +54,7 @@ const schema = new Schema({
     type: Boolean,
     default: false,
   },
+  RPM: Object,
 });
 
 module.exports = model("device", schema);
