@@ -55,6 +55,7 @@ const schema = new Schema({
     default: false,
   },
   RPM: Object,
+  formula: Object,
 });
 
 module.exports = model("device", schema);
