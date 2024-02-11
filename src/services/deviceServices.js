@@ -44,11 +44,11 @@ class DeviceServices {
     return { ...requestResponse.success, data: { length: devices } };
   }
   async create(body) {
-    const userId = body.user;
+    // const userId = body.user;
     let area = {};
-    if (userId && !isValidId(userId))
-      throw { ...requestResponse.bad_request, message: "Invalid user ID" };
-    const exist = await Device.findOne({ name: body.name });
+    // if (userId && !isValidId(userId))
+    //   throw { ...requestResponse.bad_request, message: "Invalid user ID" };
+    const exist = await Device.findOne({ macaddress: body.macaddress });
     if (exist)
       return { ...requestResponse.conflict, message: "device already exist" };
 
@@ -77,18 +77,13 @@ class DeviceServices {
         };
       }
     }
-    // console.log({ body });
-    const device = await Device.create({ ...body, area, user: userId || null });
-    if (userId) {
-      // const updateUser = await userService.addDevices({
-      //   device: device._id,
-      //   id: user,
-      // });
-      const user = await User.findById(userId);
-      if (!user) throw { ...requestResponse.not_found };
-      user.devices.push(device);
-      await user.save();
-    }
+    const device = await Device.create({ ...body, area });
+    // if (userId) {
+    // const user = await User.findById(userId);
+    // if (!user) throw { ...requestResponse.not_found };
+    // user.devices.push(device);
+    // await user.save();
+    // }
 
     logger.info(`Create Device with ID ${device._id}  `);
     return {
@@ -96,7 +91,7 @@ class DeviceServices {
       data: {
         _id: device._id,
         name: device.name,
-        user: device.user,
+        // user: device.user,
         macaddress: device.macaddress,
         location: device.area.location,
       },
