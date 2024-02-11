@@ -90,7 +90,6 @@ class UserServices {
     return { ...requestResponse.success, data: user };
   }
   async addDevices({ id, device, latLng }) {
-    // console.log({ id, device });
     if (!isValidId(id))
       throw { ...requestResponse.bad_request, message: "Invalid ID" };
     const user = await User.findById(id).select("-password -__v -refreshToken");
@@ -106,27 +105,11 @@ class UserServices {
     const deviceExist = user.devices.filter(
       (deviceId) => registedDevice._id + "" == deviceId
     );
-    // console.log({ deviceExist });
     if (deviceExist.length != 0)
       throw { ...requestResponse.conflict, message: "Device already register" };
 
-    // const getLocation = await locationService.get(latLng);
-    // if (getLocation.code !== 200) throw getLocation;
-
-    // const {
-    //   area: { city, region, road, state, village },
-    //   formatedLoc,
-    // } = getLocation;
-
     registedDevice.user = id;
     user.devices.push(registedDevice._id);
-    // user.area.pulau = region;
-    // user.area.kota = city;
-    // user.area.jalan = road;
-    // user.area.prov = state;
-    // user.area.desa = village;
-    // user.area.latLong = [latLng.lat, latLng.lng];
-    // user.area.location = formatedLoc;
 
     await user.save();
     await registedDevice.save();
